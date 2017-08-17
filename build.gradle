@@ -9,6 +9,12 @@ sourceSets {
 }
 
 dependencies {
+    // This is only necessary because in real life, we have dependencies between classes
+    // and what you're likely to want to do, is to provide a JDK 9 specific class, which depends on common
+    // classes of the main source set. In other words, you want to override some specific classes, but they
+    // still have dependencies onto other classes.
+    // We want to avoid recompiling all those classes, so we're just saying that the Java 9 specific classes
+    // "depend on" the main ones.
     java9Implementation files(sourceSets.main.output.classesDirs) { builtBy compileJava }
 }
 
