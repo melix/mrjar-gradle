@@ -1,0 +1,44 @@
+apply plugin: 'java-library'
+
+sourceSets {
+   java9 {
+      java {
+       srcDirs = ['src/main/java9']
+      }
+   }
+}
+
+dependencies {
+    java9Implementation files(sourceSets.main.output.classesDirs) { builtBy compileJava }
+}
+
+compileJava {
+   sourceCompatibility = 8
+   targetCompatibility = 8
+}
+
+compileJava9Java {
+   sourceCompatibility = 9
+   targetCompatibility = 9
+}
+
+jar {
+   into('META-INF/versions/9') {
+      from sourceSets.java9.output
+   }
+   manifest.attributes(
+      'Multi-Release': 'true', 
+      'Main-Class': 'com.acme.JdkSpecific'
+   )
+}
+
+// You might wonder why not use the `application` plugin here?
+// Well it's easy: it doesn't build the jar (because it doesn't have to,
+// it can use the class directory instead), so since it's not a jar, multi-release is not seen!
+// Another good reason not to use MRJars!
+task run(type: JavaExec) {
+   dependsOn jar
+   classpath files(jar.archivePath)
+   main = 'com.acme.JdkSpecific'
+}
+
