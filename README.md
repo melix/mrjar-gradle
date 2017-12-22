@@ -1,7 +1,6 @@
 # Building a MRJAR with Gradle
 
-WARNING: Don't do this at home. MRJARs are a very wrong abstraction for a real problem. We will come with more details
-about why. If you still insist on creating one, here's how you can do it with Gradle.
+WARNING: Before doing this, we strongly recommend to read this [blog post](https://blog.gradle.org/mrjars) which highlights the consequences of your decision.
 
 # Cross-compilation
 
