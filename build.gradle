@@ -7,6 +7,11 @@ sourceSets {
        srcDirs = ['src/main/java9']
       }
    }
+   java10 {
+      java {
+       srcDirs = ['src/main/java10']
+      }
+   }
 }
 
 dependencies {
@@ -17,6 +22,7 @@ dependencies {
     // We want to avoid recompiling all those classes, so we're just saying that the Java 9 specific classes
     // "depend on" the main ones.
     java9Implementation files(sourceSets.main.output.classesDirs) { builtBy compileJava }
+    java10Implementation files(sourceSets.main.output.classesDirs) { builtBy compileJava }
 }
 
 compileJava {
@@ -29,9 +35,17 @@ compileJava9Java {
    targetCompatibility = 9
 }
 
+compileJava10Java {
+   sourceCompatibility = 10
+   targetCompatibility = 10
+}
+
 jar {
    into('META-INF/versions/9') {
       from sourceSets.java9.output
+   }
+   into('META-INF/versions/10') {
+      from sourceSets.java10.output
    }
    manifest.attributes(
       'Multi-Release': 'true', 
