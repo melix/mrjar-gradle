@@ -1,0 +1,12 @@
+plugins {
+    id 'java-library'
+}
+
+import me.champeau.mrjar.MrJarExtension
+
+extensions.create("multiReleaseJar", MrJarExtension, java, sourceSets, javaToolchains)
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+}

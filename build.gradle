@@ -1,45 +1,21 @@
 plugins {
-   id 'java-library'
+   id 'me.champeau.mrjar'
+
+   // for Spock tests
+   id 'groovy'
 }
 
-java {
-   toolchain {
-      languageVersion.set(JavaLanguageVersion.of(8))
-   }
+repositories {
+   jcenter()
 }
 
-sourceSets {
-   java11 {
-      java {
-       srcDirs = ['src/main/java11']
-      }
-   }
+multiReleaseJar {
+   addLanguageVersion 11
 }
 
 dependencies {
-    // This is only necessary because in real life, we have dependencies between classes
-    // and what you're likely to want to do, is to provide a JDK 9 specific class, which depends on common
-    // classes of the main source set. In other words, you want to override some specific classes, but they
-    // still have dependencies onto other classes.
-    // We want to avoid recompiling all those classes, so we're just saying that the Java 9 specific classes
-    // "depend on" the main ones.
-    java11Implementation files(sourceSets.main.output.classesDirs)
-}
-
-tasks.named('compileJava11Java') {
-   javaCompiler = javaToolchains.compilerFor {
-      languageVersion = JavaLanguageVersion.of(11)
-   }
-}
-
-jar {
-   into('META-INF/versions/11') {
-      from sourceSets.java11.output
-   }
-   manifest.attributes(
-      'Multi-Release': 'true', 
-      'Main-Class': 'com.acme.JdkSpecific'
-   )
+   testImplementation 'org.codehaus.groovy:groovy-all:2.5.13'
+   testImplementation 'org.spockframework:spock-core:1.3-groovy-2.5'
 }
 
 // You might wonder why not use the `application` plugin here?
@@ -47,8 +23,7 @@ jar {
 // it can use the class directory instead), so since it's not a jar, multi-release is not seen!
 // Another good reason not to use MRJars!
 task run(type: JavaExec) {
-   dependsOn jar
-   classpath files(jar.archivePath)
+   classpath files(jar)
    main = 'com.acme.JdkSpecific'
 }
 
